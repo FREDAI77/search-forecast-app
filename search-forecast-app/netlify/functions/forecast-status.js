@@ -13,21 +13,19 @@ exports.handler = async (event) => {
     };
   }
 
-  // TEMPORARY: Mock data per testare il sito
-  // TODO: Implementare cache Redis/Database quando pronto
+  // Dati mock per test - formato corretto per il grafico
+  const mockResult = {
+    status: 'completed',
+    forecast: {
+      dates: ['2026-05-01', '2026-05-05', '2026-05-10', '2026-05-15', '2026-05-20', '2026-05-25', '2026-05-31'],
+      volumes: [1200, 1500, 1800, 2100, 1900, 2200, 2500],
+      lowerBound: [1000, 1300, 1600, 1900, 1700, 2000, 2300],
+      upperBound: [1400, 1700, 2000, 2300, 2100, 2400, 2700]
+    }
+  };
+
   return { 
     statusCode: 200, 
-    body: JSON.stringify({ 
-      status: 'completed',
-      data: {
-        volumes: [1200, 1500, 1800, 2100, 1900, 2200, 2500, 2800, 2600, 2400, 2200, 2000],
-        trend: 'up',
-        keyword: 'mock-keyword',
-        dateRange: {
-          start: '2026-05-01',
-          end: '2026-05-31'
-        }
-      }
-    }) 
+    body: JSON.stringify(mockResult)
   };
 };
