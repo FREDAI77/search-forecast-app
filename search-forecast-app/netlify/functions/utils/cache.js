@@ -1,10 +1,4 @@
 
----
-
-## ⚙️ Netlify Functions
-
-### 📄 `netlify/functions/utils/cache.js`
-```javascript
 /**
  * Cache LRU in-memory per ambiente di sviluppo.
  * ️ In produzione: sostituire con Upstash Redis o AWS ElastiCache.
