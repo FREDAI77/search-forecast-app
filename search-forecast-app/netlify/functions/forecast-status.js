@@ -1,31 +1,46 @@
-/**
- * GET /api/forecast-status?jobId=xxx
- * Polling risultato job
- */
+const cache = require('./utils/cache');
 
 exports.handler = async (event) => {
-  const jobId = event.queryStringParameters?.jobId;
-  
-  if (!jobId) {
-    return { 
-      statusCode: 400, 
-      body: JSON.stringify({ error: 'Missing jobId' }) 
+  try {
+    const { keyword, dateRange, location } = JSON.parse(event.body);
+    
+    if (!keyword || !dateRange) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing required parameters' })
+      };
+    }
+
+    // Genera jobId
+    const jobId = Math.random().toString(36).substr(2, 9);
+    
+    // Dati mock completi per il grafico
+    const mockForecast = {
+      dates: ['2026-05-08', '2026-05-09', '2026-05-10', '2026-05-11', '2026-05-12', '2026-05-13', '2026-05-14', '2026-05-15'],
+      volumes: [1200, 1350, 1500, 1650, 1800, 1950, 2100, 2250],
+      lowerBound: [1000, 1150, 1300, 1450, 1600, 1750, 1900, 2050],
+      upperBound: [1400, 1550, 1700, 1850, 2000, 2150, 2300, 2450]
+    };
+
+    // Salva nella cache (per compatibilità)
+    cache.set(jobId, {
+      status: 'completed',
+      result: mockForecast
+    });
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        jobId,
+        status: 'completed',
+        result: mockForecast
+      })
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
     };
   }
-
-  // Dati mock per test - formato corretto per il grafico
-  const mockResult = {
-    status: 'completed',
-    forecast: {
-      dates: ['2026-05-01', '2026-05-05', '2026-05-10', '2026-05-15', '2026-05-20', '2026-05-25', '2026-05-31'],
-      volumes: [1200, 1500, 1800, 2100, 1900, 2200, 2500],
-      lowerBound: [1000, 1300, 1600, 1900, 1700, 2000, 2300],
-      upperBound: [1400, 1700, 2000, 2300, 2100, 2400, 2700]
-    }
-  };
-
-  return { 
-    statusCode: 200, 
-    body: JSON.stringify(mockResult)
-  };
 };
